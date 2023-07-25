@@ -12,11 +12,12 @@ import torch
 from torchvision import transforms
 from PIL import Image
 from utils.RNet_model import ResNet9
-# 
 
 ## loading and setting model
-disease_model_path = 'Models/plant_disease_model.pth'
-disease_model = ResNet9(3, len(38))
+
+disease_model_path = 'src\Models\plant_disease_model.pth'
+# disease_model = ResNet9(3, len(38))
+disease_model = ResNet9(3, 38)
 disease_model.load_state_dict(torch.load(
     disease_model_path, map_location=torch.device('cpu')))
 disease_model.eval()
@@ -50,6 +51,7 @@ def predict():
             # Pick index with highest probability
             _, preds = torch.max(yb, dim=1)
             prediction = disease_classes[preds[0].item()]
+            print(prediction)
 
             return render_template('display.html', status = 200, result = prediction)
 
@@ -64,7 +66,12 @@ def predict_image(img, model=disease_model):
     :params: image
     :return: prediction (string)
     """
-    
+    transform = transforms.Compose([
+                transforms.Resize(256),
+                transforms.ToTensor(),
+            ])
+    img_t = transform(img)
+    img_u = torch.unsqueeze(img_t, 0)
     
 
     # Get predictions from model
