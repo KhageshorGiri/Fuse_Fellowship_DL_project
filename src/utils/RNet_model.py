@@ -12,9 +12,10 @@ def ConvBlock(in_channels, out_channels, pool=False):
     return nn.Sequential(*layers)
 
 # Model Architecture
-class ResNet9(nn.Module):
-    def __init__(self, in_channels, num_diseases):
-        super().__init__()
+# resnet architecture 
+class PlantDiseaseAndCategoryClassification(nn.Module):
+    def __init__(self, in_channels, num_diseases, num_category):
+        super(PlantDiseaseAndCategoryClassification, self).__init__()
         
         self.conv1 = ConvBlock(in_channels, 64)
         self.conv2 = ConvBlock(64, 128, pool=True) # out_dim : 128 x 64 x 64 
@@ -24,9 +25,12 @@ class ResNet9(nn.Module):
         self.conv4 = ConvBlock(256, 512, pool=True) # out_dim : 512 x 4 x 44
         self.res2 = nn.Sequential(ConvBlock(512, 512), ConvBlock(512, 512))
         
-        self.classifier = nn.Sequential(nn.MaxPool2d(4),
+        self.classifier_diseases = nn.Sequential(nn.MaxPool2d(4),
                                        nn.Flatten(),
                                        nn.Linear(512, num_diseases))
+        self.classifier_category = nn.Sequential(nn.MaxPool2d(4),
+                                       nn.Flatten(),
+                                       nn.Linear(512, num_category))
         
     def forward(self, xb): # xb is the loaded batch
         out = self.conv1(xb)
@@ -34,6 +38,7 @@ class ResNet9(nn.Module):
         out = self.res1(out) + out
         out = self.conv3(out)
         out = self.conv4(out)
-        out = self.res2(out) + out
-        out = self.classifier(out)
-        return out
+        resnet_out = self.res2(out) + out
+        disease_out = self.classifier_diseases(resnet_out)
+        category_out = self.classifier_category(resnet_out)
+        return (disease_out, category_out)  
