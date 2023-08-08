@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>Crops Disease Identification</title>
+  <title>{{title}}</title>
   <!--meta tags -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -128,15 +128,15 @@
   </section>
 
 
-  <section class="blog_w3ls py-3 pb-5 pt-10" id="test">
+  <section class="blog_w3ls py-3 pt-10" id="test" style="background-color: azure;">
     <div class="container pb-xl-5 pb-lg-3">
       <h3 class="title text-center mb-lg-5 mb-md-4 mb-sm-4 mb-3"> Test Your Plants</h3>
       <div class="row" style="justify-content: center;">
         <form action="{{ url_for('predict') }}" method="POST" enctype=multipart/form-data>
           <div class="form-group text-center">
-            <label for="exampleFormControlFile1"><b>Input a file</b></label>
-            <input type="file" name="file" class="form-control-file" id="inputImage" onchange=previewImage(event)
-              required>
+            <h4 for="exampleFormControlFile1"><b>Upload a Crop's Leaf Photo</b></h4>
+            <br />
+            <input type="file" name="file" class="form-control" id="inputImage" onchange=previewImage(event) required >
             <br />
             <button class="btn btn-primary" type="submit"> Predict </button>
           </div>
@@ -148,6 +148,7 @@
 
   </section>
 
+  {% block body %} {% endblock %}
 
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
     integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
@@ -160,14 +161,32 @@
     crossorigin="anonymous"></script>
 
   <script>
+
     function previewImage(event) {
+      
       var reader = new FileReader();
       reader.onload = function () {
         var output = document.getElementById('output-image')
         output.src = reader.result;
+        localStorage.setItem("storedImage", reader.result);
       }
       reader.readAsDataURL(event.target.files[0]);
     }
+
+    
+    function displayImg(){
+      var storedImage = localStorage.getItem("storedImage");
+      console.log(storedImage);
+      if(storedImage){
+        document.getElementById("crop_img").src =  storedImage;
+      }
+    }
+    if(document.getElementById('pred_value') != null){
+      window.onload = displayImg();
+    }
+    
+    
+
   </script>
 </body>
 

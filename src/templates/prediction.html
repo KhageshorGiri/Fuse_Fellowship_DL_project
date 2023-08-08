@@ -1,0 +1,31 @@
+
+{% extends 'index.html' %} {% block body %}
+
+{% if result is not none %}
+
+<section class="blog_w3ls pb-3" id="test" style="background-color: azure;">
+    <div class="container">
+        <div class="text-center ">
+        <img id="crop_img" class="rounded mx-auto d-block" />
+        <br />
+        </div>
+    </div>
+</section>
+
+{% endif %}
+<section class="blog_w3ls pb-3" style="background-color:cornsilk;">
+    <div class="container py-2 mx-auto h-10 " >
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h2 class="text-center">Result</h1>
+        </div>
+        <div class="col-sm py-2 ">
+            <div class="card card-body" style="justify-content: center; background-color:rgba(228, 222, 104, 0.967)">
+                <p class="text-center" id="pred_value" style="color: black; font-size: 22px;" value="{{result[1]}}">Plant: {{result[1]}}</p>
+                <p class="text-center" style="color: black; font-size: 22px;">Disease: {{result[0]}}</p>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+{% endblock %}

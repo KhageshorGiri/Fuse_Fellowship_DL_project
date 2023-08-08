@@ -1,6 +1,7 @@
 import torch 
 import torch.nn as nn
 import torch.nn.functional as F
+from utils.config import disease_classes, plant_category
 
 
 def ConvBlock(in_channels, out_channels, pool=False):
